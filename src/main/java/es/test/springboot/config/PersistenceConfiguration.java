@@ -24,6 +24,7 @@ public class PersistenceConfiguration {
         DataSourceBuilder builder = DataSourceBuilder.create();
 
         builder.url(databaseUrl);
+		System.out.println("Base de datos: " + databaseUrl);
         builder.username(username);
         builder.password(password);
         System.out.println("Mi DataSource es inicializado");

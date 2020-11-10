@@ -1,11 +1,26 @@
 version: "3"
-service:
+services:
   db:
-    image: "postgres: latest"
+    #image: "postgres:latest"
+    image: "postgres:11.5-alpine"
     container_name: "postgres_docker"
     environment:
-        - POSTGRES_USER = postgres
-        - POSTGRES_PASSWORD = "Welcome"
-        - POSTGRES_DB = conference_app
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=Welcome
+        - POSTGRES_DB=conference_app
     ports:
         - "5432:5432" 
+    volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        
+  app:
+    image: "springboot:v9"
+    container_name: "app_springboot"
+    environment:
+        - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
+        - DB_USER=postgres 
+        - DB_PASSWORD=Welcome
+    ports:
+        - "5000:5000"
+    depends_on:
+      - "db"
