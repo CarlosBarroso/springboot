@@ -27,20 +27,20 @@ RUN apk --update add git less openssh && \
     rm -rf /var/lib/apt/lists/* && \
     rm /var/cache/apk/*
  
-RUN	git clone https://github.com/CarlosBarroso/springboot.git
+RUN git clone https://github.com/CarlosBarroso/springboot.git
 
 WORKDIR /springboot
 	   
 RUN mvn package -Dmaven.test.skip=true 
 
 FROM alpine:latest
+WORKDIR /root
 
 RUN apk --update --no-cache add openjdk11
 
-WORKDIR /root
-
 COPY --from=build /springboot/target/demo-0.0.1-SNAPSHOT.jar demo-0.0.1-SNAPSHOT.jar
 
-ENTRYPOINT ["java","-DDB_URL=jdbc:postgresql://52.146.153.78:5432/conference_app", "-DDB_USER=postgres", "-DDB_PASSWORD=Welcome", "-jar","demo-0.0.1-SNAPSHOT.jar"]
+#ENTRYPOINT ["sh", "-c", "java -DDB_URL=${DB_URL} -DDB_USER=${DB_USER} -DDB_PASSWORD=${DB_PASSWORD} -jar /demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar","demo-0.0.1-SNAPSHOT.jar"]
 
 #ENTRYPOINT ["/bin/bash"]

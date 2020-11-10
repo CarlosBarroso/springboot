@@ -1,6 +1,6 @@
 version: "3"
 services:
-  db:
+  postgres:
     #image: "postgres:latest"
     image: "postgres:11.5-alpine"
     container_name: "postgres_docker"
@@ -14,7 +14,7 @@ services:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot:v9"
+    image: "springboot:v21"
     container_name: "app_springboot"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -23,4 +23,6 @@ services:
     ports:
         - "5000:5000"
     depends_on:
-      - "db"
+      - "postgres"
+      
+      
