@@ -5,24 +5,89 @@ services:
     image: "postgres:11.5-alpine"
     container_name: "postgres_docker"
     environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=Welcome
-        - POSTGRES_DB=conference_app
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Welcome
+        POSTGRES_DB: conference_app
     ports:
         - "5432:5432" 
     volumes:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot:v21"
-    container_name: "app_springboot"
+    image: "springboot:v25"
+    container_name: "api"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
-        - DB_USER=postgres 
+        - DB_USER=postgres
         - DB_PASSWORD=Welcome
+        - ELASTICSEARCH=http://elasticsearch:9200
     ports:
-        - "5000:5000"
+        - "8080:5000"
     depends_on:
-      - "postgres"
+      - postgres
+      - elasticsearch
       
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    #6.5.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node    
+#      - ELASTICSEARCH_USERNAME= elastic
+#      - ELASTICSEARCH_PASSWORD= changeme   
+#      - xpack.security.enabled= true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
       
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    container_name: kibana    
+    environment:
+#      ELASTICSEARCH_USERNAME: elastic
+#      ELASTICSEARCH_PASSWORD: changeme
+      # Because Elasticsearch is running in a containerized environment
+      # (setting this to false will result in CPU stats not being correct in the Monitoring UI):
+      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+    ports:
+      - 5601:5601
+    depends_on:
+      - "elasticsearch"
+
+  logstash:
+    image: logstash:7.9.3
+    container_name: logstash
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+#      XPACK_MONITORING_ELASTICSEARCH_USERNAME: elastic
+#      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: changeme
+#      XPACK_MONITORING_ELASTICSEARCH_HOSTS: "elasticsearch:9200"
+#      XPACK_MONITORING_ENABLED: "true"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    
+    depends_on:
+      - elasticsearch
+      
+#  metricbeat:
+#    image: metricbeat:v40
+#    container_name: metricbeat    
+#    volumes:
+#     - "./metricbeat/metricbeatinit.sh:/usr/local/bin/metricbeatinit.sh"
+#    environment:
+#      - setup.kibana.host=kibana:5601
+#      - output.elasticsearch.hosts=["elasticsearch:9200"]
+#    #command: ["--strict.perms=false", "-system.hostfs=/hostfs", "metricbeatinit.sh" ]
+#    #- metricbeatinit.sh
+#    depends_on:
+#      - elasticsearch
+#      - app
+#      - kibana
+        
