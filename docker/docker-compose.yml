@@ -14,7 +14,7 @@ services:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot:v25"
+    image: "springboot:v28"
     container_name: "api"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -76,6 +76,17 @@ services:
     depends_on:
       - elasticsearch
       
+  apmserver:
+    image: docker.elastic.co/apm/apm-server:7.9.3
+    container_name: apmserver
+    environment:
+      - output.elasticsearch.hosts=["elasticsearch:9200"]      
+    volumes:
+      - ./apm/apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro
+    ports:
+      - "8200:8200"
+    depends_on:
+      - elasticsearch
 #  metricbeat:
 #    image: metricbeat:v40
 #    container_name: metricbeat    

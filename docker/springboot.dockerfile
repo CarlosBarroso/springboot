@@ -26,12 +26,17 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 RUN apk --update add git less openssh && \
     rm -rf /var/lib/apt/lists/* && \
     rm /var/cache/apk/*
- 
 RUN git clone https://github.com/CarlosBarroso/springboot.git
+#RUN git clone https://github.com/elastic/apm-agent-java.git
 
-WORKDIR /springboot
-	   
+WORKDIR /springboot	 
+
 RUN mvn package -Dmaven.test.skip=true 
+
+#WORKDIR /apm-agent-java
+#RUN mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+
+RUN curl -fsSL -o elastic-apm-agent-1.19.0.jar https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.19.0/elastic-apm-agent-1.19.0.jar
 
 FROM alpine:latest
 WORKDIR /root
@@ -39,8 +44,7 @@ WORKDIR /root
 RUN apk --update --no-cache add openjdk11
 
 COPY --from=build /springboot/target/demo-0.0.1-SNAPSHOT.jar demo-0.0.1-SNAPSHOT.jar
+COPY --from=build /springboot/elastic-apm-agent-1.19.0.jar elastic-apm-agent-1.19.0.jar
 
-#ENTRYPOINT ["sh", "-c", "java -DDB_URL=${DB_URL} -DDB_USER=${DB_USER} -DDB_PASSWORD=${DB_PASSWORD} -jar /demo-0.0.1-SNAPSHOT.jar"]
-ENTRYPOINT ["java", "-jar","demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-javaagent:./elastic-apm-agent-1.19.0.jar", "-Delastic.apm.server_url=http://apmserver:8200", "-Delastic.apm.service_name=my-application", "-jar","demo-0.0.1-SNAPSHOT.jar"]
 
-#ENTRYPOINT ["/bin/bash"]
