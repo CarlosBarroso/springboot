@@ -1,5 +1,7 @@
 package es.test.springboot.config;
 
+import es.test.springboot.aspects.LoggingAspect;
+import org.aspectj.lang.Aspects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,11 @@ public class PersistenceConfiguration {
         builder.password(password);
         System.out.println("Mi DataSource es inicializado");
         return builder.build();
+    }
+
+    @Bean
+    public LoggingAspect interceptor() {
+        return  Aspects.aspectOf(LoggingAspect.class);
     }
 
 }
