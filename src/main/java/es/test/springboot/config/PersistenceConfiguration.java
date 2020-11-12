@@ -42,6 +42,6 @@ public class PersistenceConfiguration {
         return  Aspects.aspectOf(LoggingAspect.class);
     }
     */
-     */
+
 
 }
