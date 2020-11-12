@@ -35,9 +35,13 @@ public class PersistenceConfiguration {
         return builder.build();
     }
 
+
+    /*
     @Bean
     public LoggingAspect interceptor() {
         return  Aspects.aspectOf(LoggingAspect.class);
     }
+    */
+     */
 
 }
