@@ -1,0 +1,34 @@
+package es.test.springboot.aspects;
+
+import org.aspectj.lang.annotation.Aspect;
+
+import java.util.logging.Logger;
+
+@Aspect
+public class LogginAspect {
+	private Logger logger = Logger.getLogger(LoggingAspect.class.getName());
+
+	@Arround("execution(* *.*Controller(..))")
+	public Object log (ProceedingJoinPoint thisJoinPoint)
+			throws Throwable {
+		String methodName = thisJoinPoint.getSignature().getName();
+		Object[] methodArgs = thisJoinPoint.getArgs();
+		logger.info("Call method " + methodName + " with args " + methodArgs[0]);
+		Object result = thisJoinPoint.proceed();
+		logger.info("Method " + methodName + " returns " + result);
+		return result;
+	}
+
+/*
+	@Before ("execution( * *.*Controller(..))")
+	public void before () {
+		logger.info("Entering method");
+	}
+
+	@After ("execution( * *.*Controller(..))")
+	public void after () {
+		logger.info("Exiting method");
+	}
+*/
+
+}
