@@ -5,13 +5,14 @@ import org.aspectj.lang.Aspects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+//import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import javax.sql.DataSource;
 
 @Configuration
-@EnableAspectJAutoProxy
+//@EnableAspectJAutoProxy
 public class PersistenceConfiguration {
 
     @Value("${spring.datasource.url}")
@@ -20,8 +21,6 @@ public class PersistenceConfiguration {
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
-
-
 
     @Bean
     public DataSource dataSource() {
