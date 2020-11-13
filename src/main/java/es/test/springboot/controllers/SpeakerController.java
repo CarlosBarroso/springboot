@@ -7,6 +7,7 @@ import es.test.springboot.repositories.SpeakerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class SpeakerController {
 
 
     @GetMapping
-    public Page<Speaker> list(Pageable pageable){
+    public Page<Speaker> list(@PageableDefault(size = 10) Pageable pageable){
         return speakerPagingRepository.findAll( pageable);
     }
 
