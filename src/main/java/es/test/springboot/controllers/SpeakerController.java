@@ -2,13 +2,14 @@ package es.test.springboot.controllers;
 
 
 import es.test.springboot.models.Speaker;
+import es.test.springboot.repositories.SpeakerPagingRepository;
 import es.test.springboot.repositories.SpeakerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/v1/speakers")
@@ -16,9 +17,13 @@ public class SpeakerController {
     @Autowired
     private SpeakerRepository speakerRepository;
 
+    @Autowired
+    private SpeakerPagingRepository speakerPagingRepository;
+
+
     @GetMapping
-    public List<Speaker> list(){
-        return speakerRepository.findAll();
+    public Page<Speaker> list(Pageable pageable){
+        return speakerPagingRepository.findAll( pageable);
     }
 
     @GetMapping

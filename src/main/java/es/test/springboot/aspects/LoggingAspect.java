@@ -4,7 +4,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Service;
 
 import java.util.logging.Logger;
 
@@ -18,6 +17,7 @@ public class LoggingAspect {
     @Around("@annotation(es.test.springboot.annotations.Log)")
     public Object log (ProceedingJoinPoint thisJoinPoint)
             throws Throwable {
+
         String methodName = thisJoinPoint.getSignature().getName();
         Object[] methodArgs = thisJoinPoint.getArgs();
         StringBuffer sb = new StringBuffer();
