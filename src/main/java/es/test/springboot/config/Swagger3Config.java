@@ -1,4 +1,4 @@
-package es.test.springboot.config;
+/*package es.test.springboot.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +25,7 @@ public class SwaggerConfig {
     }
 }
 */
+/*
 @Configuration
 public class Swagger3Config {
         @Bean
@@ -33,4 +34,4 @@ public class Swagger3Config {
 				.apis(RequestHandlerSelectors.basePackage("com.springboot.swagger.controller"))
 				.build();
 	}
-}
+}*/
