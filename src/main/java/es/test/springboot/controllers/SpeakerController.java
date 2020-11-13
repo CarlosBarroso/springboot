@@ -7,9 +7,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/speakers")
@@ -25,7 +29,12 @@ public class SpeakerController {
     @GetMapping
     @RequestMapping("{id}")
     public Speaker get(@PathVariable Long id){
-        return speakerRepository.getOne(id);
+
+        Speaker speaker = speakerRepository.getOne(id);
+        Link selfLink = linkTo(SpeakerController.class).slash(speaker.getSpeaker_id()).withSelfRel();
+        speaker.add(selfLink);
+
+        return speaker;
     }
 
     @PostMapping

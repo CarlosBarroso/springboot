@@ -2,12 +2,13 @@ package es.test.springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "speakers")
-public class Speaker {
+public class Speaker extends RepresentationModel<Speaker> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long speaker_id;
