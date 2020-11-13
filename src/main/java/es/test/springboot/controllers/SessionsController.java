@@ -4,6 +4,9 @@ import es.test.springboot.models.Session;
 import es.test.springboot.repositories.SessionRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +19,8 @@ public class SessionsController {
     private SessionRepository sessionRepository;
 
     @GetMapping
-    public List<Session> list(){
-        return sessionRepository.findAll();
+    public Page<Session> list(@PageableDefault(size = 10) Pageable pageable){
+        return sessionRepository.findAll(pageable);
     }
 
     @GetMapping

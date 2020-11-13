@@ -2,7 +2,6 @@ package es.test.springboot.controllers;
 
 
 import es.test.springboot.models.Speaker;
-import es.test.springboot.repositories.SpeakerPagingRepository;
 import es.test.springboot.repositories.SpeakerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,9 @@ public class SpeakerController {
     @Autowired
     private SpeakerRepository speakerRepository;
 
-    @Autowired
-    private SpeakerPagingRepository speakerPagingRepository;
-
-
     @GetMapping
     public Page<Speaker> list(@PageableDefault(size = 10) Pageable pageable){
-        return speakerPagingRepository.findAll( pageable);
+        return speakerRepository.findAll( pageable);
     }
 
     @GetMapping
