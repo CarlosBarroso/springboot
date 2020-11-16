@@ -51,12 +51,6 @@ public class SessionModelAssembler extends RepresentationModelAssemblerSupport<S
                 ).withRel("Put")
         );
 
-        sessionModel.add(
-                linkTo(
-                        methodOn(SessionsController.class).create(  new Session())
-                ).withRel("Post")
-        );
-
         return sessionModel;
     }
 
@@ -70,6 +64,13 @@ public class SessionModelAssembler extends RepresentationModelAssemblerSupport<S
                         methodOn(SessionsController.class).list( PageRequest.of(0,10))
                 ).withSelfRel()
         );
+
+        sessionModels.add(
+                linkTo(
+                        methodOn(SessionsController.class).create(  new Session())
+                ).withRel("Post")
+        );
+
 
         return sessionModels;
     }
