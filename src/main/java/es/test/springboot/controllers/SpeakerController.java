@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -27,8 +30,12 @@ public class SpeakerController {
     private SpeakerModelAssembler speakerModelAssembler;
 
     @GetMapping
-    public Page<Speaker> list(@PageableDefault(size = 10) Pageable pageable){
-        return speakerRepository.findAll( pageable);
+    public List<EntityModel<Speaker>> list(@PageableDefault(size = 10) Pageable pageable){
+        return speakerRepository.findAll( pageable)
+                .getContent()
+                .stream()
+                .map(speakerModelAssembler::toModel)
+                .collect(Collectors.toList());
     }
 
     @GetMapping
