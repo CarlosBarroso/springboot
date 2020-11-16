@@ -1,6 +1,7 @@
 package es.test.springboot.controllers;
 
 
+import es.test.springboot.models.SpeakerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import es.test.springboot.hateoas.SpeakerModelAssembler;
@@ -29,22 +30,19 @@ public class SpeakerController {
     @Autowired
     private SpeakerModelAssembler speakerModelAssembler;
 
-
     @Autowired
     private PagedResourcesAssembler<Speaker> pagedResourcesAssembler;
 
     @GetMapping
-    public  PagedModel<EntityModel<Speaker>>  list(@PageableDefault(size = 10) Pageable pageable){
-
-        Page<Speaker> pageSpeakers = speakerRepository.findAll( pageable);
-
-        return pagedResourcesAssembler.toModel(pageSpeakers, speakerModelAssembler);
-
+    public  PagedModel<SpeakerModel>  list(@PageableDefault(size = 10) Pageable pageable){
+        return pagedResourcesAssembler.toModel(
+                speakerRepository.findAll( pageable),
+                speakerModelAssembler);
     }
 
     @GetMapping
     @RequestMapping("{id}")
-    public EntityModel<Speaker> get(@PathVariable Long id){
+    public SpeakerModel get(@PathVariable Long id){
         return speakerModelAssembler.toModel(
                 speakerRepository.getOne(id)
         );
@@ -55,8 +53,7 @@ public class SpeakerController {
     public Speaker create (@RequestBody final Speaker speakerModel){
         return speakerRepository.saveAndFlush(speakerModel);
     }
-
-
+    
     @RequestMapping(value="{id}", method=RequestMethod.DELETE)
     public void delete (@PathVariable Long id) {
         speakerRepository.deleteById(id);
@@ -68,7 +65,5 @@ public class SpeakerController {
         BeanUtils.copyProperties(speakerModel, existingSpeakerModel, "speaker_id");
         return speakerRepository.saveAndFlush(existingSpeakerModel);
     }
-
-
 
 }

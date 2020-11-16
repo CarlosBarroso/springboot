@@ -15,6 +15,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class SessionModelAssembler implements RepresentationModelAssembler<Session, EntityModel<Session>> {
 
 
+    public SessionModelAssembler() {
+    }
+
     @Override
     public EntityModel<Session> toModel(Session session) {
 

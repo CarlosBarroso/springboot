@@ -16,6 +16,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class HomeModelAssembler  implements RepresentationModelAssembler<Map, EntityModel<Map>> {
 
+    public HomeModelAssembler() {
+    }
+
     @Override
     public EntityModel<Map> toModel(Map map) {
 

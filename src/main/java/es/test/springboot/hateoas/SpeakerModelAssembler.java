@@ -2,6 +2,8 @@ package es.test.springboot.hateoas;
 
 import es.test.springboot.controllers.SpeakerController;
 import es.test.springboot.entities.Speaker;
+import es.test.springboot.models.SpeakerModel;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -12,29 +14,34 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class SpeakerModelAssembler
-        extends RepresentationModelAssemblerSupport<Speaker, EntityModel<Speaker>> {
+        extends RepresentationModelAssemblerSupport<Speaker, SpeakerModel> {
 
-    public SpeakerModelAssembler(Class<?> controllerClass, Class<EntityModel<Speaker>> resourceType) {
-        super(controllerClass, resourceType);
+
+    public SpeakerModelAssembler() {
+        super(SpeakerController.class, SpeakerModel.class);
     }
 
     @Override
-    public EntityModel<Speaker> toModel(Speaker speaker) {
+    public SpeakerModel toModel(Speaker speaker) {
 
-        return EntityModel.of(speaker,
-                linkTo(methodOn(SpeakerController.class).get(speaker.getSpeaker_id())).withSelfRel(),
-                linkTo(methodOn(SpeakerController.class).list( PageRequest.of(0,10))).withRel("speakers"));
+        SpeakerModel speakerModel = instantiateModel(speaker);
 
+        BeanUtils.copyProperties(speaker, speakerModel);
+
+        speakerModel.add(linkTo(methodOn(SpeakerController.class).get(speaker.getSpeaker_id())).withSelfRel());
+        speakerModel.add(linkTo(methodOn(SpeakerController.class).list( PageRequest.of(0,10))).withRel("speakers"));
+
+        return speakerModel;
     }
 
     @Override
-    public CollectionModel<EntityModel<Speaker>> toCollectionModel(Iterable<? extends Speaker> entities)
+    public CollectionModel<SpeakerModel> toCollectionModel(Iterable<? extends Speaker> entities)
     {
-        CollectionModel<EntityModel<Speaker>> actorModels = super.toCollectionModel(entities);
+        CollectionModel<SpeakerModel> speakerModels = super.toCollectionModel(entities);
 
-        actorModels.add(linkTo(methodOn(SpeakerController.class).list( PageRequest.of(0,10))).withSelfRel());
+        speakerModels.add(linkTo(methodOn(SpeakerController.class).list( PageRequest.of(0,10))).withSelfRel());
 
-        return actorModels;
+        return speakerModels;
     }
 
 }
