@@ -19,8 +19,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 
 
 @RestController
@@ -67,8 +65,12 @@ public class SessionsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> create (@RequestBody final Session session) {
-        Message<Session> message = MessageBuilder.withPayload(session).build();
+    public ResponseEntity<Void> create (@RequestBody final Session session)
+    {
+        Message<Session> message = MessageBuilder
+                .withPayload(session)
+                .build();
+
         messageChannel.send(message);
         //return ResponseEntity.created(new URI("tbc")).build();
         return ResponseEntity.noContent().build();
@@ -76,13 +78,15 @@ public class SessionsController {
 
     @DeleteMapping
     @RequestMapping(value="{id}", method=RequestMethod.DELETE)
-    public ResponseEntity<Void> delete (@PathVariable Long id) {
+    public ResponseEntity<Void> delete (@PathVariable Long id)
+    {
         sessionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value="{id}", method =RequestMethod.PUT)
-    public Session update(@PathVariable Long id, @RequestBody Session session){
+    public Session update(@PathVariable Long id, @RequestBody Session session)
+    {
         Session existingSession = sessionRepository.getOne(id);
         BeanUtils.copyProperties(session, existingSession, "session_id");
         return sessionService.update(existingSession);
