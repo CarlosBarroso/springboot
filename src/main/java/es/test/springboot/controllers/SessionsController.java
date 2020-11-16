@@ -5,6 +5,7 @@ import es.test.springboot.hateoas.SessionModelAssembler;
 import es.test.springboot.entities.Session;
 import es.test.springboot.models.SessionModel;
 import es.test.springboot.repositories.SessionRepository;
+import es.test.springboot.services.SessionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,8 @@ public class SessionsController {
     @Autowired
     private PagedResourcesAssembler<Session> pagedResourcesAssembler;
 
+    @Autowired
+    private SessionService sessionService;
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
@@ -59,8 +62,8 @@ public class SessionsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Session create (@RequestBody final Session sessionModel){
-        return sessionRepository.saveAndFlush(sessionModel);
+    public Session create (@RequestBody final Session session){
+        return sessionService.add(session);
     }
 
     @DeleteMapping
@@ -74,7 +77,7 @@ public class SessionsController {
     public Session update(@PathVariable Long id, @RequestBody Session session){
         Session existingSession = sessionRepository.getOne(id);
         BeanUtils.copyProperties(session, existingSession, "session_id");
-        return sessionRepository.saveAndFlush(existingSession);
+        return sessionService.update(existingSession);
     }
 
 
