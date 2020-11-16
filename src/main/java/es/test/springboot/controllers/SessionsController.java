@@ -24,7 +24,7 @@ public class SessionsController {
 
     @Autowired
     private SessionModelAssembler sessionModelAssembler;
-    
+
     @GetMapping
     public Page<EntityModel<Session>> list(@PageableDefault(size = 10) Pageable pageable){
 
