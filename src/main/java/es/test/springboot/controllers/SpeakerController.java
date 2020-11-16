@@ -33,7 +33,7 @@ public class SpeakerController {
 
     @GetMapping
     @RequestMapping("{id}")
-    public EntityModel<Speaker> getOne(@PathVariable Long id){
+    public EntityModel<Speaker> get(@PathVariable Long id){
 
         Speaker speaker = speakerRepository.getOne(id);
         return speakerModelAssembler.toModel(speaker);

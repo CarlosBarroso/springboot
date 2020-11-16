@@ -1,25 +1,27 @@
 package es.test.springboot.hateoas;
 
+
+import es.test.springboot.controllers.SessionsController;
 import es.test.springboot.controllers.SpeakerController;
-import es.test.springboot.models.Speaker;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
-import org.springframework.data.domain.PageRequest;
+
+import java.util.Map;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class SpeakerModelAssembler implements RepresentationModelAssembler<Speaker, EntityModel<Speaker>> {
+public class HomeModelAssembler  implements RepresentationModelAssembler<Map, EntityModel<Map>> {
 
     @Override
-    public EntityModel<Speaker> toModel(Speaker speaker) {
+    public EntityModel<Map> toModel(Map map) {
 
-        return EntityModel.of(speaker,
-                linkTo(methodOn(SpeakerController.class).get(speaker.getSpeaker_id())).withSelfRel(),
+        return EntityModel.of(map,
+                linkTo(methodOn(SessionsController.class).list(  PageRequest.of(0,10))).withRel("sesions"),
                 linkTo(methodOn(SpeakerController.class).list( PageRequest.of(0,10))).withRel("speakers"));
 
     }
-
 }
