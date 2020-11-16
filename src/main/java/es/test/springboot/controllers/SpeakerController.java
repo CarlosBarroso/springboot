@@ -1,24 +1,26 @@
 package es.test.springboot.controllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import es.test.springboot.hateoas.SpeakerModelAssembler;
 import es.test.springboot.models.Speaker;
 import es.test.springboot.repositories.SpeakerRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/speakers")
@@ -29,13 +31,17 @@ public class SpeakerController {
     @Autowired
     private SpeakerModelAssembler speakerModelAssembler;
 
+
+    @Autowired
+    private PagedResourcesAssembler<Speaker> pagedResourcesAssembler;
+
     @GetMapping
-    public List<EntityModel<Speaker>> list(@PageableDefault(size = 10) Pageable pageable){
-        return speakerRepository.findAll( pageable)
-                .getContent()
-                .stream()
-                .map(speakerModelAssembler::toModel)
-                .collect(Collectors.toList());
+    public  PagedModel<EntityModel<Speaker>>  list(@PageableDefault(size = 10) Pageable pageable){
+
+        Page<Speaker> pageSpeakers = speakerRepository.findAll( pageable);
+
+        return pagedResourcesAssembler.toModel(pageSpeakers, speakerModelAssembler);
+
     }
 
     @GetMapping
