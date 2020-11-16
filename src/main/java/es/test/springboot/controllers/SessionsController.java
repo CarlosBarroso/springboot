@@ -1,6 +1,5 @@
 package es.test.springboot.controllers;
 
-import es.test.springboot.entities.Speaker;
 import es.test.springboot.hateoas.SessionModelAssembler;
 import es.test.springboot.entities.Session;
 import es.test.springboot.models.SessionModel;
@@ -8,19 +7,21 @@ import es.test.springboot.repositories.SessionRepository;
 import es.test.springboot.services.SessionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 
 @RestController
 @RequestMapping("/api/v1/sessions")
@@ -36,6 +37,13 @@ public class SessionsController {
 
     @Autowired
     private SessionService sessionService;
+
+    private final MessageChannel messageChannel;
+
+    public SessionsController (@Qualifier("addSessionRequest") MessageChannel messageChannel)
+    {
+        this.messageChannel = messageChannel;
+    }
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
@@ -62,8 +70,11 @@ public class SessionsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Session create (@RequestBody final Session session){
-        return sessionService.add(session);
+    public ResponseEntity<Void> create (@RequestBody final Session session) {
+        Message<Session> message = MessageBuilder.withPayload(session).build();
+        messageChannel.send(message);
+        //return ResponseEntity.created(new URI("tbc")).build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
