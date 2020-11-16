@@ -38,12 +38,9 @@ public class SessionsController {
     @Autowired
     private SessionService sessionService;
 
-    private final MessageChannel messageChannel;
-
-    public SessionsController (@Qualifier("addSessionRequest") MessageChannel messageChannel)
-    {
-        this.messageChannel = messageChannel;
-    }
+    @Autowired
+    @Qualifier("addSessionRequest")
+    private MessageChannel messageChannel;
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
