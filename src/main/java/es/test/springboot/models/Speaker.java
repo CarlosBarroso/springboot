@@ -1,6 +1,6 @@
 package es.test.springboot.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Type;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -24,7 +24,7 @@ public class Speaker extends RepresentationModel<Speaker> {
     private byte[] speaker_photo;
 
     @ManyToMany(mappedBy = "speakers")
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Session> sessions;
 
     public Speaker() {

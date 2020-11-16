@@ -1,12 +1,14 @@
 package es.test.springboot.controllers;
 
 
+import es.test.springboot.hateoas.SpeakerModelAssembler;
 import es.test.springboot.models.Speaker;
 import es.test.springboot.repositories.SpeakerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ public class SpeakerController {
     @Autowired
     private SpeakerRepository speakerRepository;
 
+    @Autowired
+    private SpeakerModelAssembler speakerModelAssembler;
+
     @GetMapping
     public Page<Speaker> list(@PageableDefault(size = 10) Pageable pageable){
         return speakerRepository.findAll( pageable);
@@ -28,13 +33,10 @@ public class SpeakerController {
 
     @GetMapping
     @RequestMapping("{id}")
-    public Speaker get(@PathVariable Long id){
+    public EntityModel<Speaker> getOne(@PathVariable Long id){
 
         Speaker speaker = speakerRepository.getOne(id);
-        Link selfLink = linkTo(SpeakerController.class).slash(speaker.getSpeaker_id()).withSelfRel();
-        speaker.add(selfLink);
-
-        return speaker;
+        return speakerModelAssembler.toModel(speaker);
     }
 
     @PostMapping

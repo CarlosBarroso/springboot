@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "sessions")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +20,7 @@ public class Session {
             joinColumns = @JoinColumn(name = "session_id"),
             inverseJoinColumns = @JoinColumn(name = "speaker_id")
     )
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Speaker> speakers;
 
     public Long getSession_id() {
