@@ -21,6 +21,7 @@ public class Speaker extends RepresentationModel<Speaker> {
 
     @Lob
     @Type(type="org.hibernate.type.BinaryType")
+    @JsonIgnoreProperties
     private byte[] speaker_photo;
 
     @ManyToMany(mappedBy = "speakers")
