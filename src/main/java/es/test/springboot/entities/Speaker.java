@@ -1,13 +1,22 @@
 package es.test.springboot.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "speakers")
-public class Speaker  {
+public class Speaker implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long speaker_id;
@@ -26,10 +35,6 @@ public class Speaker  {
     @ManyToMany(mappedBy = "speakers")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Session> sessions;
-
-    public Speaker() {
-
-    }
 
     public byte[] getSpeaker_photo() {
         return speaker_photo;

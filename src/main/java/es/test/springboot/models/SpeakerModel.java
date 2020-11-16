@@ -1,9 +1,16 @@
 package es.test.springboot.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpeakerModel  extends RepresentationModel<SpeakerModel> {
-
 
     private Long speaker_id;
 

@@ -1,13 +1,21 @@
 package es.test.springboot.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
-
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "sessions")
-public class Session {
+public class Session  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long session_id;
@@ -64,7 +72,4 @@ public class Session {
         this.session_length = session_length;
     }
 
-
-
-    public Session() {}
 }

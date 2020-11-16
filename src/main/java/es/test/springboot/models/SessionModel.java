@@ -1,9 +1,17 @@
 package es.test.springboot.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-public class SessionModel  extends RepresentationModel<SessionModel> {
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SessionModel  extends RepresentationModel<SessionModel>  {
 
     private Long session_id;
     private String session_name;

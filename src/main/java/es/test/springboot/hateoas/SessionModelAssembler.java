@@ -16,11 +16,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class SessionModelAssembler extends RepresentationModelAssemblerSupport<Session, SessionModel> {
 
-
     public SessionModelAssembler() {
         super(SessionsController.class, SessionModel.class);
     }
-
 
     @Override
     public SessionModel toModel(Session session) {
@@ -49,13 +47,13 @@ public class SessionModelAssembler extends RepresentationModelAssemblerSupport<S
 
         sessionModel.add(
                 linkTo(
-                        methodOn(SessionsController.class).update( session.getSession_id(),new Session())
+                        methodOn(SessionsController.class).update( session.getSession_id(), new Session())
                 ).withRel("Put")
         );
 
         sessionModel.add(
                 linkTo(
-                        methodOn(SessionsController.class).create( new Session())
+                        methodOn(SessionsController.class).create(  new Session())
                 ).withRel("Post")
         );
 
