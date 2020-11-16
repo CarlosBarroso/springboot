@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/sessions")
 public class SessionsController {
+
     @Autowired
     private SessionRepository sessionRepository;
 
@@ -37,8 +38,12 @@ public class SessionsController {
     private SessionService sessionService;
 
     @Autowired
-    @Qualifier("addSessionRequest")
-    private MessageChannel messageChannel;
+    @Qualifier("messageChannelAddSession")
+    private MessageChannel messageChannelAddSession;
+
+    @Autowired
+    @Qualifier("messageChannelUpdateSession")
+    private MessageChannel messageChannelUpdateSession;
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
@@ -71,7 +76,7 @@ public class SessionsController {
                 .withPayload(session)
                 .build();
 
-        messageChannel.send(message);
+        messageChannelAddSession.send(message);
         //return ResponseEntity.created(new URI("tbc")).build();
         return ResponseEntity.noContent().build();
     }
@@ -85,11 +90,20 @@ public class SessionsController {
     }
 
     @RequestMapping(value="{id}", method =RequestMethod.PUT)
-    public Session update(@PathVariable Long id, @RequestBody Session session)
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Session session)
     {
         Session existingSession = sessionRepository.getOne(id);
+
         BeanUtils.copyProperties(session, existingSession, "session_id");
-        return sessionService.update(existingSession);
+
+        Message<Session> message = MessageBuilder
+                .withPayload(existingSession)
+                .build();
+
+        messageChannelUpdateSession.send(message);
+
+        //return sessionService.update(existingSession);
+        return ResponseEntity.noContent().build();
     }
 
 

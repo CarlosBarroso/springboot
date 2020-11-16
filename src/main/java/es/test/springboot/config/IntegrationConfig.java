@@ -13,16 +13,30 @@ import org.springframework.messaging.MessageChannel;
 public class IntegrationConfig {
 
     @Bean
-    public MessageChannel messageChannel()
+    public MessageChannel messageChannelAddSession()
     {
-        return MessageChannels.direct("addSessionRequest").get();
+        return MessageChannels.direct("messageChannelAddSession").get();
     }
 
     @Bean
-    public IntegrationFlow integrationFlow (SessionService sessionService)
+    public IntegrationFlow integrationFlowAdd (SessionService sessionService)
     {
-        return IntegrationFlows.from("addSessionRequest")
+        return IntegrationFlows.from("messageChannelAddSession")
                 .handle(sessionService, "add")
+                .get();
+    }
+
+    @Bean
+    public MessageChannel messageChannelUpdateSession()
+    {
+        return MessageChannels.direct("messageChannelUpdateSession").get();
+    }
+
+    @Bean
+    public IntegrationFlow integrationFlowUpdate (SessionService sessionService)
+    {
+        return IntegrationFlows.from("messageChannelUpdateSession")
+                .handle(sessionService, "update")
                 .get();
     }
 }
