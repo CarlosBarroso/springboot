@@ -15,6 +15,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,9 +63,11 @@ public class SessionsController {
         return sessionRepository.saveAndFlush(sessionModel);
     }
 
+    @DeleteMapping
     @RequestMapping(value="{id}", method=RequestMethod.DELETE)
-    public void delete (@PathVariable Long id) {
+    public ResponseEntity<Void> delete (@PathVariable Long id) {
         sessionRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value="{id}", method =RequestMethod.PUT)

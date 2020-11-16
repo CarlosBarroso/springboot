@@ -1,17 +1,12 @@
 package es.test.springboot.hateoas;
 
 import es.test.springboot.controllers.SessionsController;
-import es.test.springboot.controllers.SpeakerController;
 import es.test.springboot.entities.Session;
 
-import es.test.springboot.entities.Speaker;
 import es.test.springboot.models.SessionModel;
-import es.test.springboot.models.SpeakerModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +39,24 @@ public class SessionModelAssembler extends RepresentationModelAssemblerSupport<S
                 linkTo(
                         methodOn(SessionsController.class).list( PageRequest.of(0,10))
                 ).withRel("Sessions")
+        );
+
+        sessionModel.add(
+                linkTo(
+                        methodOn(SessionsController.class).delete( session.getSession_id())
+                ).withRel("Delete")
+        );
+
+        sessionModel.add(
+                linkTo(
+                        methodOn(SessionsController.class).update( session.getSession_id(),new Session())
+                ).withRel("Put")
+        );
+
+        sessionModel.add(
+                linkTo(
+                        methodOn(SessionsController.class).create( new Session())
+                ).withRel("Post")
         );
 
         return sessionModel;
