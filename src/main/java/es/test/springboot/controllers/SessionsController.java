@@ -1,9 +1,7 @@
 package es.test.springboot.controllers;
 
 import es.test.springboot.hateoas.SessionModelAssembler;
-import es.test.springboot.hateoas.SpeakerModelAssembler;
-import es.test.springboot.models.Session;
-import es.test.springboot.models.Speaker;
+import es.test.springboot.entities.Session;
 import es.test.springboot.repositories.SessionRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,7 @@ public class SessionsController {
 
     @Autowired
     private SessionModelAssembler sessionModelAssembler;
-
-
+    
     @GetMapping
     public Page<EntityModel<Session>> list(@PageableDefault(size = 10) Pageable pageable){
 
@@ -52,8 +49,8 @@ public class SessionsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Session create (@RequestBody final Session session){
-        return sessionRepository.saveAndFlush(session);
+    public Session create (@RequestBody final Session sessionModel){
+        return sessionRepository.saveAndFlush(sessionModel);
     }
 
     @RequestMapping(value="{id}", method=RequestMethod.DELETE)

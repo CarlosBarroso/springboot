@@ -4,7 +4,7 @@ package es.test.springboot.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import es.test.springboot.hateoas.SpeakerModelAssembler;
-import es.test.springboot.models.Speaker;
+import es.test.springboot.entities.Speaker;
 import es.test.springboot.repositories.SpeakerRepository;
 
 import org.springframework.data.domain.Page;
@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,8 +52,8 @@ public class SpeakerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Speaker create (@RequestBody final Speaker speaker){
-        return speakerRepository.saveAndFlush(speaker);
+    public Speaker create (@RequestBody final Speaker speakerModel){
+        return speakerRepository.saveAndFlush(speakerModel);
     }
 
 
@@ -65,10 +63,10 @@ public class SpeakerController {
     }
 
     @RequestMapping(value="{id}", method =RequestMethod.PUT)
-    public Speaker update(@PathVariable Long id, @RequestBody Speaker speaker){
-        Speaker existingSpeaker= speakerRepository.getOne(id);
-        BeanUtils.copyProperties(speaker, existingSpeaker, "speaker_id");
-        return speakerRepository.saveAndFlush(existingSpeaker);
+    public Speaker update(@PathVariable Long id, @RequestBody Speaker speakerModel){
+        Speaker existingSpeakerModel = speakerRepository.getOne(id);
+        BeanUtils.copyProperties(speakerModel, existingSpeakerModel, "speaker_id");
+        return speakerRepository.saveAndFlush(existingSpeakerModel);
     }
 
 

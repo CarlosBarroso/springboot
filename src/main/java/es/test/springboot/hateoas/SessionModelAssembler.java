@@ -1,7 +1,7 @@
 package es.test.springboot.hateoas;
 
 import es.test.springboot.controllers.SessionsController;
-import es.test.springboot.models.Session;
+import es.test.springboot.entities.Session;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;

@@ -1,11 +1,10 @@
 package es.test.springboot.hateoas;
 
 import es.test.springboot.controllers.SpeakerController;
-import es.test.springboot.models.Speaker;
+import es.test.springboot.entities.Speaker;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
