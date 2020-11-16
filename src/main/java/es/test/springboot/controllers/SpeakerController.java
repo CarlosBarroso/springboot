@@ -53,7 +53,7 @@ public class SpeakerController {
     public Speaker create (@RequestBody final Speaker speakerModel){
         return speakerRepository.saveAndFlush(speakerModel);
     }
-    
+
     @RequestMapping(value="{id}", method=RequestMethod.DELETE)
     public void delete (@PathVariable Long id) {
         speakerRepository.deleteById(id);

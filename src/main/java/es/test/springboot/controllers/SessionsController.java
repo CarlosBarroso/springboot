@@ -1,7 +1,9 @@
 package es.test.springboot.controllers;
 
+import es.test.springboot.entities.Speaker;
 import es.test.springboot.hateoas.SessionModelAssembler;
 import es.test.springboot.entities.Session;
+import es.test.springboot.models.SessionModel;
 import es.test.springboot.repositories.SessionRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,23 +29,28 @@ public class SessionsController {
     @Autowired
     private SessionModelAssembler sessionModelAssembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Session> pagedResourcesAssembler;
+
+
     @GetMapping
-    public Page<EntityModel<Session>> list(@PageableDefault(size = 10) Pageable pageable){
+    public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
 
-        Page<Session> pageSessions = sessionRepository.findAll( pageable);
+//        Page<Session> pageSessions = sessionRepository.findAll( pageable);
 
-        List<EntityModel<Session>> listSessions =  pageSessions.getContent()
-                .stream()
-                .map(sessionModelAssembler::toModel)
-                .collect(Collectors.toList());
+//        List<EntityModel<Session>> listSessions =  pageSessions
+//                .getContent()
+//                .stream()
+//                .map(sessionModelAssembler::toModel)
+//                .collect(Collectors.toList());
 
-        return new PageImpl<EntityModel<Session>>(listSessions,pageable, pageSessions.getTotalElements());
-
+//        return new PageImpl<EntityModel<Session>>(listSessions,pageable, pageSessions.getTotalElements());
+        return pagedResourcesAssembler.toModel(sessionRepository.findAll(pageable), sessionModelAssembler);
     }
 
     @GetMapping
     @RequestMapping("{id}")
-    public EntityModel<Session> get(@PathVariable Long id){
+    public SessionModel get(@PathVariable Long id){
         return sessionModelAssembler.toModel(
                 sessionRepository.getOne(id)
         );
