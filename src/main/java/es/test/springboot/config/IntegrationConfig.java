@@ -9,7 +9,7 @@ import org.springframework.messaging.MessageChannel;
 public class IntegrationConfig {
 
     @Bean
-    public MessageChannel restrationRequest()
+    public MessageChannel registrationRequest()
     {
         return new DirectChannel();
     }

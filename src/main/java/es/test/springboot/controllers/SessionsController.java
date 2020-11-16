@@ -39,7 +39,7 @@ public class SessionsController {
     private SessionService sessionService;
 
     @Autowired
-    @Qualifier("addSessionRequest")
+    @Qualifier("registrationRequest")
     private MessageChannel messageChannel;
 
     @GetMapping

@@ -13,7 +13,7 @@ public class SessionServiceImpl implements SessionService {
     SessionRepository sessionRepository;
 
     @Override
-    @ServiceActivator(inputChannel = "addSessionRequest")
+    @ServiceActivator(inputChannel = "registrationRequest")
     public Session add(Session session)
     {
        return sessionRepository.saveAndFlush(session);
