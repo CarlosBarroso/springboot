@@ -1,9 +1,9 @@
 package es.test.springboot.controllers;
 
 import es.test.springboot.hateoas.SessionModelAssembler;
-import es.test.springboot.entities.Session;
+import es.test.springboot.database.entities.Session;
 import es.test.springboot.models.SessionModel;
-import es.test.springboot.repositories.SessionRepository;
+import es.test.springboot.database.repositories.SessionRepository;
 import es.test.springboot.services.SessionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

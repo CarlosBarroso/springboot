@@ -1,7 +1,7 @@
 package es.test.springboot.hateoas;
 
 import es.test.springboot.controllers.SessionsController;
-import es.test.springboot.entities.Session;
+import es.test.springboot.database.entities.Session;
 
 import es.test.springboot.models.SessionModel;
 import org.springframework.beans.BeanUtils;
