@@ -19,6 +19,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 
 
 @RestController
@@ -37,6 +38,12 @@ public class SessionsController {
     @Autowired
     private SessionService sessionService;
 
+
+    @Autowired
+    @Qualifier("registrationRequest")
+    private MessageChannel registrationRequestChannel;
+
+/*
     @Autowired
     @Qualifier("messageChannelAddSession")
     private MessageChannel messageChannelAddSession;
@@ -44,6 +51,7 @@ public class SessionsController {
     @Autowired
     @Qualifier("messageChannelUpdateSession")
     private MessageChannel messageChannelUpdateSession;
+*/
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
@@ -74,9 +82,10 @@ public class SessionsController {
     {
         Message<Session> message = MessageBuilder
                 .withPayload(session)
+                .setHeader("dateTime", OffsetDateTime.now())
                 .build();
 
-        messageChannelAddSession.send(message);
+        registrationRequestChannel.send(message);
         //return ResponseEntity.created(new URI("tbc")).build();
         return ResponseEntity.noContent().build();
     }
@@ -100,11 +109,12 @@ public class SessionsController {
                 .withPayload(existingSession)
                 .build();
 
-        messageChannelUpdateSession.send(message);
+        //messageChannelUpdateSession.send(message);
 
         //return sessionService.update(existingSession);
         return ResponseEntity.noContent().build();
     }
+
 
 
 }
