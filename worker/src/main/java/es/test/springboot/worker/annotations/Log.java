@@ -1,4 +1,4 @@
-package es.test.springboot.annotations;
+package es.test.springboot.worker.annotations;
 
 public @interface Log {
 }

@@ -1,4 +1,4 @@
-package es.test.springboot.aspects;
+package es.test.springboot.worker.aspects;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,7 +14,7 @@ public class LoggingAspect {
 
     private Logger logger = Logger.getLogger(LoggingAspect.class.getName());
 
-    @Around("@annotation(es.test.springboot.annotations.Log)")
+    @Around("@annotation(es.test.springboot.worker.annotations.Log)")
     public Object log (ProceedingJoinPoint thisJoinPoint)
             throws Throwable {
 

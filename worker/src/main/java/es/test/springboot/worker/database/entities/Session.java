@@ -1,4 +1,4 @@
-package es.test.springboot.entities;
+package es.test.springboot.worker.database.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
