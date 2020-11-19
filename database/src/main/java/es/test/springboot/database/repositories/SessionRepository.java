@@ -1,4 +1,4 @@
-package es.test.springboot.repositories;
+package es.test.springboot.database.repositories;
 
 import es.test.springboot.entities.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
