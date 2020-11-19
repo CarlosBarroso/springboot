@@ -5,6 +5,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>worker</module>
+		<module>api</module>
 	</modules>
 	<!--
 	<modules>
