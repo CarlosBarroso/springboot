@@ -110,7 +110,7 @@ public class IntegrationConfig {
                             .protocol("smtp")),
                     e -> e.id("sendMailEndpoint"))
                 .get();*/
-
+/* wip
         @Bean
         public IntegrationFlow classify() {
             return IntegrationFlows.from("registrationEvent")
@@ -119,5 +119,5 @@ public class IntegrationConfig {
                                     .channel("registrationEvent")
                                     .get();
         }
-
+*/
 }
