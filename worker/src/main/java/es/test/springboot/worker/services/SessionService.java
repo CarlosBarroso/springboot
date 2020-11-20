@@ -17,9 +17,9 @@ public class SessionService  {
 
     @Log
     @ServiceActivator(inputChannel = "registrationRequest")
-    public Session add(@Payload Session session)
+    public void add(@Payload Session session)
     {
-       return sessionRepository.saveAndFlush(session);
+        sessionRepository.saveAndFlush(session);
     }
 
     public Session update(Session session) {
