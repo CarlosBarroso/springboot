@@ -45,7 +45,10 @@ services:
         - RABBITMQ_USER=guest
         - RABBITMQ_PASSWORD=guest
         - RABBITMQ_QUEUE=globomantics.registrationRequest
-        - EMAIL_URL=http://greenmail:8083
+        - EMAIL_HOST=greenmail
+        - EMAIL_PORT=8083
+        - EMAIL_USER=user_mail
+        - EMAIL_PASSWORD=password
     ports:
         - "8090:5010"
     depends_on:

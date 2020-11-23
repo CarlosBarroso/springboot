@@ -21,6 +21,7 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.http.dsl.Http;
 import org.springframework.integration.json.JsonToObjectTransformer;
+import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.integration.transformer.HeaderEnricher;
 import org.springframework.messaging.MessageChannel;
 
@@ -75,20 +76,27 @@ public class IntegrationConfig {
     @Autowired
     private ConfirmationMailTransformer confirmationMailTransformer;
 
-    @Value("${email.url}")
-    private String EMAIL_URL;
-
+    @Value("${email.host}")
+    private String EMAIL_HOST;
+    @Value("${email.port}")
+    private String EMAIL_PORT;
+    @Value("${email.user}")
+    private String EMAIL_USER;
+    @Value("${email.password}")
+    private String EMAIL_PASSWORD;
 
     @Bean
     public IntegrationFlow myFlow() {
         return IntegrationFlows.from("eventChannel")
-                .enrichHeaders(h -> h.header("from", "from@test.com") )
-                .enrichHeaders(h -> h.header("to", "to@test.com") )
-                .enrichHeaders(h -> h.header("subject", "mail confirmación") )
+                .enrichHeaders(Mail.headers()
+                        .subjectFunction(m -> "asunto del mensaje")
+                        .from( "from@test.com")
+                        .toFunction(m -> new String[] { "bar@baz" }))
                 .transform(confirmationMailTransformer, "toMailText")
-                .handle(Http.outboundGateway(EMAIL_URL)
-                        .httpMethod(HttpMethod.POST)
-//                        .expectedResponseType(String.class)
+                .handle(Mail.outboundAdapter(EMAIL_HOST)
+                        .port(Integer.parseInt(EMAIL_PORT))
+                        .credentials(EMAIL_USER, EMAIL_PASSWORD)
+                        .protocol("imap")
                 )
                 .get();
     }
