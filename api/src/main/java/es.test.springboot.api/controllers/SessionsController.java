@@ -1,5 +1,6 @@
 package es.test.springboot.api.controllers;
 
+import es.test.springboot.api.commandsGateway.AddSessionCommand;
 import es.test.springboot.api.hateoas.SessionModelAssembler;
 import es.test.springboot.api.database.entities.Session;
 import es.test.springboot.api.models.SessionModel;
@@ -37,6 +38,11 @@ public class SessionsController {
     @Autowired
     @Qualifier("registrationRequest")
     private MessageChannel registrationRequestChannel;
+
+    @Autowired
+    private AddSessionCommand addSessionCommand;
+
+
 
 /*
     @Autowired
@@ -80,7 +86,9 @@ public class SessionsController {
                 .setHeader("dateTime", OffsetDateTime.now())
                 .build();
 
-        registrationRequestChannel.send(message);
+        //registrationRequestChannel.send(message);
+        addSessionCommand.execute(message);
+
         //return ResponseEntity.created(new URI("tbc")).build();
         return ResponseEntity.noContent().build();
     }

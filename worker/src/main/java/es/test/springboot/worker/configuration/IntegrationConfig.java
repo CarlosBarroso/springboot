@@ -17,8 +17,6 @@ import org.springframework.integration.json.JsonToObjectTransformer;
 import org.springframework.integration.transformer.HeaderEnricher;
 import org.springframework.messaging.MessageChannel;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class IntegrationConfig {
@@ -46,13 +44,13 @@ public class IntegrationConfig {
     }
 
     @Bean
-    @Transformer(inputChannel = "fromRabbit", outputChannel = "registrationRequest")
+    @Transformer(inputChannel = "fromRabbit", outputChannel = "addSessionChannel")
     public JsonToObjectTransformer jsonToObjectTransformer() {
         return new JsonToObjectTransformer(Session.class);
     }
 
     @Bean
-    public MessageChannel registrationRequest() {
+    public MessageChannel addSessionChannel() {
         return new DirectChannel();
     }
 
