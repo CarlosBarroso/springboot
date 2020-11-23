@@ -13,7 +13,7 @@ services:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot-api:v1"
+    image: "springboot-api:v2"
     container_name: "api"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -45,6 +45,7 @@ services:
         - RABBITMQ_USER=guest
         - RABBITMQ_PASSWORD=guest
         - RABBITMQ_QUEUE=globomantics.registrationRequest
+        - EMAIL_URL=http://greenmail:8083
     ports:
         - "8090:5010"
     depends_on:

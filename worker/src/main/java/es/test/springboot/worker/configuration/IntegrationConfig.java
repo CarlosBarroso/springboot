@@ -75,6 +75,10 @@ public class IntegrationConfig {
     @Autowired
     private ConfirmationMailTransformer confirmationMailTransformer;
 
+    @Value("${email.url}")
+    private String EMAIL_URL;
+
+
     @Bean
     public IntegrationFlow myFlow() {
         return IntegrationFlows.from("eventChannel")
@@ -82,7 +86,7 @@ public class IntegrationConfig {
                 .enrichHeaders(h -> h.header("to", "to@test.com") )
                 .enrichHeaders(h -> h.header("subject", "mail confirmación") )
                 .transform(confirmationMailTransformer, "toMailText")
-                .handle(Http.outboundGateway("http://greenmail:8083")
+                .handle(Http.outboundGateway(EMAIL_URL)
                         .httpMethod(HttpMethod.POST)
 //                        .expectedResponseType(String.class)
                 )
