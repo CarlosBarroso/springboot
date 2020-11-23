@@ -1,7 +1,6 @@
 version: "3"
 services:
   postgres:
-    #image: "postgres:latest"
     image: "postgres:11.5-alpine"
     container_name: "postgres_docker"
     environment:
@@ -14,22 +13,47 @@ services:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot:v28"
+    image: "springboot-api:v1"
     container_name: "api"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
         - DB_USER=postgres
         - DB_PASSWORD=Welcome
         - ELASTICSEARCH=http://elasticsearch:9200
+        - RABBITMQ_HOST=rabbitmq
+        - RABBITMQ_PORT=5672
+        - RABBITMQ_USER=guest
+        - RABBITMQ_PASSWORD=guest
+        - RABBITMQ_QUEUE=globomantics.registrationRequest
     ports:
-        - "8080:5000"
+        - "8080:5005"
     depends_on:
       - postgres
-      - elasticsearch
+      - apmserver
+      - rabbitmq
+
+  worker:
+    image: "springboot-worker:v1"
+    container_name: "worker"
+    environment:
+        - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
+        - DB_USER=postgres
+        - DB_PASSWORD=Welcome
+        - ELASTICSEARCH=http://elasticsearch:9200
+        - RABBITMQ_HOST=rabbitmq
+        - RABBITMQ_PORT=5672
+        - RABBITMQ_USER=guest
+        - RABBITMQ_PASSWORD=guest
+        - RABBITMQ_QUEUE=globomantics.registrationRequest
+    ports:
+        - "8090:5010"
+    depends_on:
+      - postgres
+      - apmserver
+      - rabbitmq
       
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
-    #6.5.3
     container_name: elasticsearch
     environment:
       - discovery.type=single-node    
@@ -71,8 +95,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5000:5000"
-      - "9600:9600"
-    
+      - "9600:9600"    
     depends_on:
       - elasticsearch
       
@@ -87,6 +110,25 @@ services:
       - "8200:8200"
     depends_on:
       - elasticsearch
+
+  rabbitmq:
+    image: rabbitmq:3.8.9-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  greenmail:
+    image: greenmail/standalone:1.6.1
+    container_name: greenmail
+    ports:
+      - "3025:3025"
+      - "3110:3110"
+      - "3143:3143"
+      - "3465:3465"
+      - "3993:3993"
+      - "3995:3995"
+
 #  metricbeat:
 #    image: metricbeat:v40
 #    container_name: metricbeat    
