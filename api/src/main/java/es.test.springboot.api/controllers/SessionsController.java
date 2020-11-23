@@ -36,23 +36,7 @@ public class SessionsController {
     private PagedResourcesAssembler<Session> pagedResourcesAssembler;
 
     @Autowired
-    @Qualifier("registrationRequest")
-    private MessageChannel registrationRequestChannel;
-
-    @Autowired
     private AddSessionCommand addSessionCommand;
-
-
-
-/*
-    @Autowired
-    @Qualifier("messageChannelAddSession")
-    private MessageChannel messageChannelAddSession;
-
-    @Autowired
-    @Qualifier("messageChannelUpdateSession")
-    private MessageChannel messageChannelUpdateSession;
-*/
 
     @GetMapping
     public PagedModel<SessionModel> list(@PageableDefault(size = 10) Pageable pageable){
@@ -86,7 +70,6 @@ public class SessionsController {
                 .setHeader("dateTime", OffsetDateTime.now())
                 .build();
 
-        //registrationRequestChannel.send(message);
         addSessionCommand.execute(message);
 
         //return ResponseEntity.created(new URI("tbc")).build();
