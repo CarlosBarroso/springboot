@@ -89,7 +89,7 @@ public class IntegrationConfig {
                 .transform(confirmationMailTransformer, "toMailText")
                 .handle(Mail.outboundAdapter(EMAIL_HOST)
                         .port(Integer.parseInt(EMAIL_PORT))
-                        .credentials(EMAIL_USER, EMAIL_PASSWORD)
+//                        .credentials(EMAIL_USER, EMAIL_PASSWORD)
                         .protocol("smtp")
                 )
                 .get();
