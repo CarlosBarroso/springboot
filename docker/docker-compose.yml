@@ -24,7 +24,7 @@ services:
         - RABBITMQ_PORT=5672
         - RABBITMQ_USER=guest
         - RABBITMQ_PASSWORD=guest
-        - RABBITMQ_QUEUE=globomantics.registrationRequest
+        - RABBITMQ_QUEUE=sessionqueue.create
     ports:
         - "8080:5005"
     depends_on:
@@ -44,7 +44,7 @@ services:
         - RABBITMQ_PORT=5672
         - RABBITMQ_USER=guest
         - RABBITMQ_PASSWORD=guest
-        - RABBITMQ_QUEUE=globomantics.registrationRequest
+        - RABBITMQ_QUEUE=sessionqueue.create
         - EMAIL_HOST=greenmail
         - EMAIL_PORT=8083
         - EMAIL_USER=user_mail
@@ -78,8 +78,6 @@ services:
     environment:
 #      ELASTICSEARCH_USERNAME: elastic
 #      ELASTICSEARCH_PASSWORD: changeme
-      # Because Elasticsearch is running in a containerized environment
-      # (setting this to false will result in CPU stats not being correct in the Monitoring UI):
       XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
     ports:
       - 5601:5601
@@ -116,8 +114,14 @@ services:
       - elasticsearch
 
   rabbitmq:
+#    build: 
+#        context: .
+#        dockerfile: rabbitmq.dockerfile
     image: rabbitmq:3.8.9-management-alpine
     container_name: rabbitmq
+    volumes:
+        - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config:ro
+        - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
       - "5672:5672"
       - "15672:15672"
