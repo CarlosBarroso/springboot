@@ -99,13 +99,18 @@ services:
     depends_on:
       - elasticsearch
       
-  apmserver:
-    image: docker.elastic.co/apm/apm-server:7.9.3
+  apmserver:  
+    build: 
+        context: .
+        dockerfile: apmserver.dockerfile
+#    image: docker.elastic.co/apm/apm-server:7.9.3
     container_name: apmserver
     environment:
       - output.elasticsearch.hosts=["elasticsearch:9200"]      
-    volumes:
-      - ./apm/apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro
+#    volumes:
+#      - ./apm/apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro
+##    command: 
+##      - "chmod go-w /usr/share/apm-server/apm-server.yml"
     ports:
       - "8200:8200"
     depends_on:
