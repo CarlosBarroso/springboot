@@ -20,7 +20,7 @@ import org.springframework.messaging.SubscribableChannel;
 
 @Configuration
 public class IntegrationConfig {
-/*
+/* v1
     @Bean(name="messageChannelAddSession")
     public MessageChannel messageChannelAddSession()
     {
@@ -46,14 +46,15 @@ public class IntegrationConfig {
     @Value("${spring.rabbitmq.queue}")
     private String rabbitMQ_queue;
 
-
-    @Bean(name="registrationRequest")
-    public MessageChannel registrationRequest() {
+    //application channel
+    @Bean(name="addSessionRequestChannel")
+    public MessageChannel addSessionRequestChannel() {
         return new DirectChannel();
     }
 
+    //to rabbit mq transformer
     @Bean
-    @Transformer(inputChannel = "registrationRequest", outputChannel = "toRabbit")
+    @Transformer(inputChannel = "addSessionRequestChannel", outputChannel = "toRabbit")
     public ObjectToJsonTransformer objectToJsonTransformer() {
         return new ObjectToJsonTransformer();
     }
@@ -68,7 +69,6 @@ public class IntegrationConfig {
                                               @Qualifier("rabbitOutboundEndpoint") MessageHandler handler) {
         return new EventDrivenConsumer(channel, handler);
     }
-
 
     @Bean
     public AmqpOutboundEndpoint rabbitOutboundEndpoint(AmqpTemplate amqpTemplate) {

@@ -14,7 +14,7 @@ public class LoggingAspect {
 
     private Logger logger = Logger.getLogger(LoggingAspect.class.getName());
 
-    @Around("@annotation(es.test.springboot.annotations.Log)")
+    @Around("@annotation(es.test.springboot.api.annotations.Log)")
     public Object log (ProceedingJoinPoint thisJoinPoint)
             throws Throwable {
 

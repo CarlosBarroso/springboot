@@ -16,10 +16,10 @@ public class SessionService  {
     SessionRepository sessionRepository;
 
     @Log
-    @ServiceActivator(inputChannel = "registrationRequest")
-    public Session add(@Payload Session session)
+    @ServiceActivator(inputChannel = "addSessionChannel")
+    public void add(@Payload Session session)
     {
-       return sessionRepository.saveAndFlush(session);
+        sessionRepository.saveAndFlush(session);
     }
 
     public Session update(Session session) {
