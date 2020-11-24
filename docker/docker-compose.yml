@@ -22,9 +22,9 @@ services:
         - ELASTICSEARCH=http://elasticsearch:9200
         - RABBITMQ_HOST=rabbitmq
         - RABBITMQ_PORT=5672
-        - RABBITMQ_USER=guest
-        - RABBITMQ_PASSWORD=guest
-        - RABBITMQ_QUEUE=sessionqueue.create
+        - RABBITMQ_USER=user
+        - RABBITMQ_PASSWORD=password
+        - RABBITMQ_QUEUE=AddSession.Queue
     ports:
         - "8080:5005"
     depends_on:
@@ -33,7 +33,7 @@ services:
       - rabbitmq
 
   worker:
-    image: "springboot-worker:v2"
+    image: "springboot-worker:v3"
     container_name: "worker"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -42,13 +42,11 @@ services:
         - ELASTICSEARCH=http://elasticsearch:9200
         - RABBITMQ_HOST=rabbitmq
         - RABBITMQ_PORT=5672
-        - RABBITMQ_USER=guest
-        - RABBITMQ_PASSWORD=guest
-        - RABBITMQ_QUEUE=sessionqueue.create
+        - RABBITMQ_USER=user
+        - RABBITMQ_PASSWORD=password
+        - RABBITMQ_QUEUE=AddSession.Queue
         - EMAIL_HOST=greenmail
-        - EMAIL_PORT=8083
-        - EMAIL_USER=user_mail
-        - EMAIL_PASSWORD=password
+        - EMAIL_PORT=3025
     ports:
         - "8090:5010"
     depends_on:

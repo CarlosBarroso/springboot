@@ -1,5 +1,7 @@
 #https://devops.datenkollektiv.de/creating-a-custom-rabbitmq-container-with-preconfigured-queues.html
 #https://stackoverflow.com/questions/30747469/how-to-add-initial-users-when-starting-a-rabbitmq-docker-container
+#https://github.com/tyranron/lapin-issue-133-example/blob/master/rabbitmq-definitions.json
+
 FROM rabbitmq:3.8.9-management-alpine
 
 RUN rabbitmq-plugins enable --offline rabbitmq_management

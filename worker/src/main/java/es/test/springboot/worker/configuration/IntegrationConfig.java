@@ -1,5 +1,6 @@
 package es.test.springboot.worker.configuration;
 
+import es.test.springboot.worker.ErrorHandler.AddSessionErrorHandler;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.transformers.ConfirmationMailTransformer;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
@@ -18,6 +19,7 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.json.JsonToObjectTransformer;
 import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.transaction.PlatformTransactionManager;
 
 
 @Configuration
@@ -26,10 +28,19 @@ public class IntegrationConfig {
     @Value("${spring.rabbitmq.queue}")
     private String rabbitMQ_queue;
 
+    @Autowired
+    private AddSessionErrorHandler addSessionErrorHandler;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
     @Bean
     public AbstractMessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
         messageListenerContainer.setQueueNames(rabbitMQ_queue);
+        messageListenerContainer.setErrorHandler(addSessionErrorHandler);
+        messageListenerContainer.setChannelTransacted(true);
+        messageListenerContainer.setTransactionManager(transactionManager);
         return messageListenerContainer;
     }
 

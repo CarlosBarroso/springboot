@@ -2,8 +2,7 @@
     "users": [
       {
         "name": "user",  
-        "password_hash": "password",
-        "hashing_algorithm": "rabbit_password_hashing_sha256",
+        "password": "password",
         "tags": "administrator"
       }
     ],
@@ -11,7 +10,61 @@
     "vhosts":[
         {"name":"/"}
     ],
-    "queues":[
-        {"name":"sessionqueue.create","vhost":"/","durable":true,"auto_delete":false,"arguments":{}}
-    ]
+	
+	"permissions": [
+	 {
+	  "user": "user",
+	  "vhost": "/",
+	  "configure": ".*",
+	  "write": ".*",
+	  "read": ".*"
+	 }
+	],
+	"bindings":[
+      {
+         "arguments":{
+            
+         },
+         "destination":"AddSession.dlq",
+         "destination_type":"queue",
+         "routing_key":"",
+         "source":"AddSession.dlx",
+         "vhost":"/"
+      }
+   ],
+   "exchanges":[
+      {
+         "arguments":{
+            
+         },
+         "auto_delete":false,
+         "durable":true,
+         "name":"AddSession.DeadLetterExchange",
+         "type":"fanout",
+         "vhost":"/"
+      }
+   ],
+   "queues":[
+      {
+         "arguments":{
+            "x-queue-type":"classic"
+         },
+         "auto_delete":false,
+         "durable":true,
+         "name":"AddSession.DeadLetterQueue",
+         "type":"classic",
+         "vhost":"/"
+      },
+      {
+         "arguments":{
+            "x-dead-letter-exchange":"AddSession.DeadLetterExchange",
+            "x-queue-type":"classic"
+         },
+         "auto_delete":false,
+         "durable":true,
+         "name":"AddSession.Queue",
+         "type":"classic",
+         "vhost":"/"
+      }
+   ]    
 }
