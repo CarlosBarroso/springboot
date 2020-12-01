@@ -85,13 +85,15 @@ public class IntegrationConfig {
     private String EMAIL_HOST;
     @Value("${email.port}")
     private String EMAIL_PORT;
+    @Value("${email.user}")
+    private String EMAIL_USER;
 
     @Bean
     public IntegrationFlow myFlow() {
         return IntegrationFlows.from("eventChannel")
                 .enrichHeaders(Mail.headers()
                         .subjectFunction(m -> "asunto del mensaje")
-                        .from( "from@test.com")
+                        .from(EMAIL_USER)
                         .toFunction(m -> new String[] { "bar@baz" }))
                 .transform(confirmationMailTransformer, "toMailText")
                 .handle(Mail.outboundAdapter(EMAIL_HOST)

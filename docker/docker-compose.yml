@@ -33,7 +33,7 @@ services:
       - rabbitmq
 
   worker:
-    image: "springboot-worker:v3"
+    image: "springboot-worker:v5"
     container_name: "worker"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -47,6 +47,7 @@ services:
         - RABBITMQ_QUEUE=AddSession.Queue
         - EMAIL_HOST=greenmail
         - EMAIL_PORT=3025
+        - EMAIL_USER=from@test.com
     ports:
         - "8090:5010"
     depends_on:
@@ -59,9 +60,6 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node    
-#      - ELASTICSEARCH_USERNAME= elastic
-#      - ELASTICSEARCH_PASSWORD= changeme   
-#      - xpack.security.enabled= true
     ulimits:
       memlock:
         soft: -1
@@ -74,8 +72,6 @@ services:
     image: docker.elastic.co/kibana/kibana:7.9.3
     container_name: kibana    
     environment:
-#      ELASTICSEARCH_USERNAME: elastic
-#      ELASTICSEARCH_PASSWORD: changeme
       XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
     ports:
       - 5601:5601
@@ -87,10 +83,6 @@ services:
     container_name: logstash
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-#      XPACK_MONITORING_ELASTICSEARCH_USERNAME: elastic
-#      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: changeme
-#      XPACK_MONITORING_ELASTICSEARCH_HOSTS: "elasticsearch:9200"
-#      XPACK_MONITORING_ENABLED: "true"
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
@@ -149,4 +141,9 @@ services:
 #      - elasticsearch
 #      - app
 #      - kibana
+
+# ngnix
+
+# redis
+
         
