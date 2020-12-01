@@ -13,7 +13,7 @@ services:
         - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         
   app:
-    image: "springboot-api:v2"
+    image: "springboot-api:v3"
     container_name: "api"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -33,7 +33,7 @@ services:
       - rabbitmq
 
   worker:
-    image: "springboot-worker:v6"
+    image: "springboot-worker:v7"
     container_name: "worker"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app

@@ -4,3 +4,11 @@ server:
 app:
   version: 1.0.0
 
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: *
