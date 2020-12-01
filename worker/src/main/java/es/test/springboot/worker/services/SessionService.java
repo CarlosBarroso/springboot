@@ -1,6 +1,7 @@
 package es.test.springboot.worker.services;
 
 import es.test.springboot.worker.annotations.Log;
+import es.test.springboot.worker.annotations.MettricCounter;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.database.repositories.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class SessionService  {
     SessionRepository sessionRepository;
 
     @Log
+    @MettricCounter
     @ServiceActivator(inputChannel = "addSessionChannel", outputChannel = "eventChannel")
     public Message<Session> add(@Payload Session session)
     {
