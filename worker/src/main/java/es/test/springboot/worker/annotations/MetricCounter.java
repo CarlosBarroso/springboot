@@ -1,4 +1,4 @@
 package es.test.springboot.worker.annotations;
 
-public @interface MettricCounter {
+public @interface MetricCounter {
 }
