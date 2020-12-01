@@ -85,10 +85,6 @@ public class IntegrationConfig {
     private String EMAIL_HOST;
     @Value("${email.port}")
     private String EMAIL_PORT;
-    //@Value("${email.user}")
-    //private String EMAIL_USER;
-    //@Value("${email.password}")
-    //private String EMAIL_PASSWORD;
 
     @Bean
     public IntegrationFlow myFlow() {
