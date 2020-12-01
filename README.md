@@ -31,3 +31,4 @@ use the next url to access swager developer site:
 next steps:
 - use cache
 - apply athentication
+- use metricbeats to monitorize rabbitmq
