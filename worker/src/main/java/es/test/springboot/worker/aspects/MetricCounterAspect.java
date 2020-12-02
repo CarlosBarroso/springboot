@@ -17,14 +17,14 @@ public class MetricCounterAspect {
     @Autowired
     private MeterRegistry meterRegistry;
 
-    private Logger logger = Logger.getLogger(LoggingAspect.class.getName());
+    private Logger logger = Logger.getLogger(MetricCounterAspect.class.getName());
 
     @Around("@annotation(es.test.springboot.worker.annotations.MetricCounter)")
     public Object mettricCounter (ProceedingJoinPoint thisJoinPoint)
             throws Throwable {
         logger.info("MetricCounterAspect");
 
-        String className = thisJoinPoint.getClass().getName();
+        String className = "MetricCounterAspect";
         String methodName = thisJoinPoint.getSignature().getName();
 
         StringBuilder sb = new StringBuilder()

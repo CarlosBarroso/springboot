@@ -48,7 +48,7 @@ services:
         - EMAIL_HOST=greenmail
         - EMAIL_PORT=3025
         - EMAIL_USER=from@test.com
-        - INFLUX_URL=http://influx:8086
+        - INFLUX_URL=http://influxdb:8086
         - INFLUX_DB=metrics
         - INFLUX_USER=user
         - INFLUX_PASSWORD=welcome

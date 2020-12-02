@@ -4,6 +4,7 @@ import es.test.springboot.worker.annotations.Log;
 import es.test.springboot.worker.annotations.MetricCounter;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.database.repositories.SessionRepository;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
@@ -19,6 +20,7 @@ public class SessionService  {
 
     @Log
     @MetricCounter
+    @Timed("SessionService.Add")
     @ServiceActivator(inputChannel = "addSessionChannel", outputChannel = "eventChannel")
     public Message<Session> add(@Payload Session session)
     {
