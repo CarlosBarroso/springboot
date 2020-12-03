@@ -89,7 +89,7 @@ public class IntegrationConfig {
 //        return channel;
 
         return MessageChannels.direct()
-//                .wireTap("debugChannel")
+                .wireTap("debugChannel")
                 .get();
     }
 
@@ -131,11 +131,11 @@ public class IntegrationConfig {
     @Bean
     public MessageChannel debugChannel()  {
         return new QueueChannel(
-                messageGroupQueue(
-                        mongoDbChannelMessageStore(
-                                mongoDatabaseFactory()
-                        )
-                )
+//                messageGroupQueue(
+//                        mongoDbChannelMessageStore(
+//                                mongoDatabaseFactory()
+//                        )
+//                )
         );
     }
 
