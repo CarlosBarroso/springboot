@@ -89,7 +89,7 @@ public class IntegrationConfig {
 //        return channel;
 
         return MessageChannels.direct()
-                .wireTap("debugChannel")
+//                .wireTap("debugChannel")
                 .get();
     }
 
