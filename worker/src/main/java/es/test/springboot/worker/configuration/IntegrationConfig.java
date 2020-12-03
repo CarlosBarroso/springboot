@@ -1,5 +1,7 @@
 package es.test.springboot.worker.configuration;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import es.test.springboot.worker.ErrorHandler.AddSessionErrorHandler;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.transformers.ConfirmationMailTransformer;
@@ -83,15 +85,25 @@ public class IntegrationConfig {
         return channel;
     }
 
+    /*******mongo************/
 
-    @Autowired
-    MongoDatabaseFactory mongoDatabaseFactory;
+    @Bean
+    public MongoDatabaseFactory mongoDatabaseFactory ()
+    {
+//        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/test");
+//        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+//                .applyConnectionString(connectionString)
+//                .build();
+
+        //return MongoClients.create(mongoClientSettings);
+        return new SimpleMongoClientDatabaseFactory(com.mongodb.client.MongoClients.create(), "test");
+    }
 
     @Bean
     public MessageChannel debugChannel()  {
         return new QueueChannel(
                 new MessageGroupQueue(
-                        new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store"),
+                        new MongoDbChannelMessageStore(mongoDatabaseFactory(), "message-store"),
                         "GroupId"));
     }
 
