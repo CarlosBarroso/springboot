@@ -106,6 +106,7 @@ public class IntegrationConfig {
         return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
     }
 
+    /*
     @Log
     @Bean
     MessageGroupQueue messageGroupQueue (MongoDbChannelMessageStore mongoDbChannelMessageStore)
@@ -114,17 +115,25 @@ public class IntegrationConfig {
                 mongoDbChannelMessageStore,
                 "GroupId");
     }
+*/
 
     @Log
     @Bean
-    public QueueChannel debugChannel()  {
-        return new QueueChannel(
-                messageGroupQueue(
+    public MessageChannel debugChannel()  {
+        return MessageChannels
+                .queue(
                         mongoDbChannelMessageStore(
                                 mongoDatabaseFactory()
-                        )
-                )
-        );
+                        ),
+                        "GroupId")
+                .get();
+//        return new QueueChannel(
+//                messageGroupQueue(
+//                        mongoDbChannelMessageStore(
+//                                mongoDatabaseFactory()
+//                        )
+//                )
+//        );
     }
 
     @Bean
