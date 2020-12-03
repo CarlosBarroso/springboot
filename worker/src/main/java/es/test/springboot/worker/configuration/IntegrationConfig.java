@@ -3,42 +3,29 @@ package es.test.springboot.worker.configuration;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import es.test.springboot.worker.ErrorHandler.AddSessionErrorHandler;
 import es.test.springboot.worker.annotations.Log;
 import es.test.springboot.worker.database.entities.Session;
-import es.test.springboot.worker.transformers.ConfirmationMailTransformer;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.config.MongoDbFactoryParser;
-import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
-import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.json.JsonToObjectTransformer;
-import org.springframework.integration.mail.dsl.Mail;
-import org.springframework.integration.mongodb.store.ConfigurableMongoDbMessageStore;
 import org.springframework.integration.mongodb.store.MongoDbChannelMessageStore;
-import org.springframework.integration.store.BasicMessageGroupStore;
 import org.springframework.integration.store.MessageGroupQueue;
-import org.springframework.integration.store.MessageGroupStore;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.PollableChannel;
 import org.springframework.transaction.PlatformTransactionManager;
 
 
@@ -131,12 +118,12 @@ public class IntegrationConfig {
     @Log
     @Bean
     public QueueChannel debugChannel()  {
-        return new QueueChannel(100
-//                messageGroupQueue(
-//                        mongoDbChannelMessageStore(
-//                                mongoDatabaseFactory()
-//                        )
-//                )
+        return new QueueChannel(
+                messageGroupQueue(
+                        mongoDbChannelMessageStore(
+                                mongoDatabaseFactory()
+                        )
+                )
         );
     }
 
