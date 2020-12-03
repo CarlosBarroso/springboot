@@ -27,6 +27,7 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.json.JsonToObjectTransformer;
 import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.integration.mongodb.store.ConfigurableMongoDbMessageStore;
@@ -81,9 +82,13 @@ public class IntegrationConfig {
 
     @Bean
     public MessageChannel addSessionChannel() throws Exception {
-        DirectChannel channel = new DirectChannel();
-        channel.addInterceptor(new WireTap(debugChannel()));
-        return channel;
+//        DirectChannel channel = new DirectChannel();
+//        channel.addInterceptor(new WireTap(debugChannel()));
+//        return channel;
+
+        return MessageChannels.direct()
+                .wireTap("debugChannel")
+                .get();
     }
 
     /*******mongo************/
