@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.config.MongoDbFactoryParser;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
@@ -24,10 +26,13 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.json.JsonToObjectTransformer;
 import org.springframework.integration.mail.dsl.Mail;
+import org.springframework.integration.mongodb.store.ConfigurableMongoDbMessageStore;
 import org.springframework.integration.mongodb.store.MongoDbChannelMessageStore;
 import org.springframework.integration.store.BasicMessageGroupStore;
 import org.springframework.integration.store.MessageGroupQueue;
+import org.springframework.integration.store.MessageGroupStore;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.transaction.PlatformTransactionManager;
 
 
@@ -78,67 +83,21 @@ public class IntegrationConfig {
         return channel;
     }
 
-    @Value("${spring.data.mongodb.host}")
-    private String MONGO_HOST;
-    @Value("${spring.data.mongodb.database}")
-    private String MONGO_DATABASE;
+
+    @Autowired
+    MongoDatabaseFactory mongoDatabaseFactory;
 
     @Bean
-    public MongoClientFactoryBean mongo() {
-        MongoClientFactoryBean mongo = new MongoClientFactoryBean();
-        mongo.setHost(MONGO_HOST);
-        return mongo;
-    }
-
-    public @Bean
-    MongoDatabaseFactory mongoDatabaseFactory() throws Exception {
-        return new SimpleMongoClientDatabaseFactory(mongo().getObject(), MONGO_DATABASE);
-    }
-
-    private static final String GROUP_ID= "my-group";
-
-    @Bean
-    public MongoDbChannelMessageStore mongoDbChannelMessageStore (MongoDatabaseFactory mongoDatabaseFactory)
-    {
-        return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
-    }
-
-    @Bean
-    public MessageChannel debugChannel() throws Exception {
+    public MessageChannel debugChannel()  {
         return new QueueChannel(
                 new MessageGroupQueue(
-                        mongoDbChannelMessageStore(mongoDatabaseFactory()), GROUP_ID));
+                        new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store"),
+                        "GroupId"));
     }
 
     @Bean
     public MessageChannel eventChannel(){
         return new PublishSubscribeChannel();
-    }
-
-    @Autowired
-    private ConfirmationMailTransformer confirmationMailTransformer;
-
-    @Value("${email.host}")
-    private String EMAIL_HOST;
-    @Value("${email.port}")
-    private String EMAIL_PORT;
-    @Value("${email.user}")
-    private String EMAIL_USER;
-
-    @Bean
-    public IntegrationFlow myFlow() {
-        return IntegrationFlows.from("eventChannel")
-                .enrichHeaders(Mail.headers()
-                        .subjectFunction(m -> "asunto del mensaje")
-                        .from(EMAIL_USER)
-                        .toFunction(m -> new String[] { "bar@baz" }))
-                .transform(confirmationMailTransformer, "toMailText")
-                .handle(Mail.outboundAdapter(EMAIL_HOST)
-                        .port(Integer.parseInt(EMAIL_PORT))
-//                        .credentials(EMAIL_USER, EMAIL_PASSWORD)
-                        .protocol("smtp")
-                )
-                .get();
     }
 
 
