@@ -130,7 +130,7 @@ public class IntegrationConfig {
     @Log
     @Bean
     public QueueChannel debugChannel()  {
-        return new QueueChannel(
+        return new QueueChannel(100
 //                messageGroupQueue(
 //                        mongoDbChannelMessageStore(
 //                                mongoDatabaseFactory()
