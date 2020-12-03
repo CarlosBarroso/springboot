@@ -3,7 +3,9 @@ package es.test.springboot.worker.configuration;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import es.test.springboot.worker.ErrorHandler.AddSessionErrorHandler;
+import es.test.springboot.worker.annotations.Log;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.transformers.ConfirmationMailTransformer;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
@@ -96,7 +98,7 @@ public class IntegrationConfig {
     @Value("${spring.data.mongodb.uri}")
     private String MONGODB_URI;
 
-
+    @Log
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory ()
     {
@@ -109,12 +111,32 @@ public class IntegrationConfig {
         return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoClientSettings), "test");
     }
 
+    @Log
+    @Bean
+    MongoDbChannelMessageStore mongoDbChannelMessageStore(MongoDatabaseFactory mongoDatabaseFactory)
+    {
+        return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
+    }
+
+    @Log
+    @Bean
+    MessageGroupQueue messageGroupQueue (MongoDbChannelMessageStore mongoDbChannelMessageStore)
+    {
+        return new MessageGroupQueue(
+                mongoDbChannelMessageStore,
+                "GroupId");
+    }
+
+    @Log
     @Bean
     public MessageChannel debugChannel()  {
         return new QueueChannel(
-                new MessageGroupQueue(
-                        new MongoDbChannelMessageStore(mongoDatabaseFactory(), "message-store"),
-                        "GroupId"));
+                messageGroupQueue(
+                        mongoDbChannelMessageStore(
+                                mongoDatabaseFactory()
+                        )
+                )
+        );
     }
 
     @Bean
