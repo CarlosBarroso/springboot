@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
@@ -27,6 +28,8 @@ import org.springframework.integration.mongodb.store.MongoDbChannelMessageStore;
 import org.springframework.integration.store.MessageGroupQueue;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -60,7 +63,9 @@ public class IntegrationConfig {
 
     @Bean
     public MessageChannel fromRabbit() {
-        return new DirectChannel();
+        return MessageChannels
+                .direct()
+                .get();
     }
 
     @Bean
@@ -71,13 +76,8 @@ public class IntegrationConfig {
 
     @Bean
     public MessageChannel addSessionChannel() throws Exception {
-//        DirectChannel channel = new DirectChannel();
-//        channel.addInterceptor(new WireTap(debugChannel()));
-//        return channel;
-
         return MessageChannels.direct()
                 .interceptor(new WireTap(debugChannel()))
-                //.wireTap("debugChannel")
                 .get();
     }
 
@@ -90,32 +90,36 @@ public class IntegrationConfig {
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory ()
     {
-        ConnectionString connectionString = new ConnectionString(MONGODB_URI);
-
+        String connectionString = new StringBuilder()
+                .append(MONGODB_URI)
+                .append("?uuidRepresentation=STANDARD")
+                .toString();
+        
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
+                .applyConnectionString(new ConnectionString(connectionString))
                 .build();
 
         return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoClientSettings), "test");
     }
 
+    /*
+    @Bean
+    public MongoCustomConversions mongoCustomConversion() {
+        return new MongoCustomConversions(Arrays.asList(
+                new MediaTypeToStringConverter(),
+                new StringToMediaTypeConverter(),
+                new OffsetDateTimetoStringConverter(),
+                new StringToOffsetDateTimeConverter()
+        ));
+    }
+
+     */
     @Log
     @Bean
     MongoDbChannelMessageStore mongoDbChannelMessageStore(MongoDatabaseFactory mongoDatabaseFactory)
     {
         return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
     }
-
-    /*
-    @Log
-    @Bean
-    MessageGroupQueue messageGroupQueue (MongoDbChannelMessageStore mongoDbChannelMessageStore)
-    {
-        return new MessageGroupQueue(
-                mongoDbChannelMessageStore,
-                "GroupId");
-    }
-*/
 
     @Log
     @Bean
@@ -127,18 +131,13 @@ public class IntegrationConfig {
                         ),
                         "GroupId")
                 .get();
-//        return new QueueChannel(
-//                messageGroupQueue(
-//                        mongoDbChannelMessageStore(
-//                                mongoDatabaseFactory()
-//                        )
-//                )
-//        );
     }
 
     @Bean
     public MessageChannel eventChannel(){
-        return new PublishSubscribeChannel();
+        return MessageChannels
+                .publishSubscribe()
+                .get();
     }
 
 

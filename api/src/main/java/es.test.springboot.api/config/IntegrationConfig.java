@@ -49,7 +49,9 @@ public class IntegrationConfig {
     //application channel
     @Bean(name="addSessionRequestChannel")
     public MessageChannel addSessionRequestChannel() {
-        return new DirectChannel();
+        return MessageChannels
+                .direct()
+                .get();
     }
 
     //to rabbit mq transformer
@@ -61,7 +63,9 @@ public class IntegrationConfig {
 
     @Bean
     public SubscribableChannel toRabbit() {
-        return new DirectChannel();
+        return MessageChannels
+                .direct()
+                .get();
     }
 
     @Bean
