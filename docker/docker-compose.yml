@@ -33,7 +33,7 @@ services:
       - rabbitmq
 
   worker:
-    image: "springboot-worker:v7"
+    image: "springboot-worker:v8"
     container_name: "worker"
     environment:
         - DB_URL=jdbc:postgresql://postgres_docker:5432/conference_app
@@ -52,6 +52,7 @@ services:
         - INFLUX_DB=metrics
         - INFLUX_USER=user
         - INFLUX_PASSWORD=welcome
+        - MONGO_URL=mongodb://mongo/eventos
     ports:
         - "8090:5010"
     depends_on:
@@ -170,6 +171,6 @@ services:
 
   mongodb:
     image: mongo
-    container_name: mongodb    
+    container_name: mongo    
     ports:
       - "27017:27017"

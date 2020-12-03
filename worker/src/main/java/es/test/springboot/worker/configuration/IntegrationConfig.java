@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoClientFactoryBean;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
@@ -69,26 +72,42 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public MessageChannel addSessionChannel() {
+    public MessageChannel addSessionChannel() throws Exception {
         DirectChannel channel = new DirectChannel();
         channel.addInterceptor(new WireTap(debugChannel()));
         return channel;
     }
 
-    @Autowired MongoDbFactory mongoDatabaseFactory;
+    @Value("${spring.data.mongodb.host}")
+    private String MONGO_HOST;
+    @Value("${spring.data.mongodb.database}")
+    private String MONGO_DATABASE;
+
+    @Bean
+    public MongoClientFactoryBean mongo() {
+        MongoClientFactoryBean mongo = new MongoClientFactoryBean();
+        mongo.setHost(MONGO_HOST);
+        return mongo;
+    }
+
+    public @Bean
+    MongoDatabaseFactory mongoDatabaseFactory() throws Exception {
+        return new SimpleMongoClientDatabaseFactory(mongo().getObject(), MONGO_DATABASE);
+    }
+
     private static final String GROUP_ID= "my-group";
 
     @Bean
-    public MongoDbChannelMessageStore mongoDbChannelMessageStore (MongoDbFactory mongoDatabaseFactory)
+    public MongoDbChannelMessageStore mongoDbChannelMessageStore (MongoDatabaseFactory mongoDatabaseFactory)
     {
         return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
     }
 
     @Bean
-    public MessageChannel debugChannel(){
+    public MessageChannel debugChannel() throws Exception {
         return new QueueChannel(
                 new MessageGroupQueue(
-                        mongoDbChannelMessageStore(mongoDatabaseFactory), GROUP_ID));
+                        mongoDbChannelMessageStore(mongoDatabaseFactory()), GROUP_ID));
     }
 
     @Bean
