@@ -53,6 +53,8 @@ services:
         - INFLUX_USER=user
         - INFLUX_PASSWORD=welcome
         - MONGO_URL=mongodb://mongo/eventos
+        - MONGO_HOST=mongo
+        - MONGO_DATABASE=eventos
     ports:
         - "8090:5010"
     depends_on:
@@ -168,6 +170,9 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"        
+#    volumes: --> aquí van los ficheros de configuración de grafana
+#        - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config:ro       
+#        - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
 
   mongodb:
     image: mongo

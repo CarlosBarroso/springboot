@@ -86,6 +86,9 @@ public class IntegrationConfig {
     @Value("${spring.data.mongodb.uri}")
     private String MONGODB_URI;
 
+    @Value("${spring.data.mongodb.database}")
+    private String MONGODB_DATABASE_NAME;
+
     @Log
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory ()
@@ -94,12 +97,12 @@ public class IntegrationConfig {
                 .append(MONGODB_URI)
                 .append("?uuidRepresentation=STANDARD")
                 .toString();
-        
+
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .build();
 
-        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoClientSettings), "test");
+        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoClientSettings), MONGODB_DATABASE_NAME);
     }
 
     /*
@@ -118,7 +121,7 @@ public class IntegrationConfig {
     @Bean
     MongoDbChannelMessageStore mongoDbChannelMessageStore(MongoDatabaseFactory mongoDatabaseFactory)
     {
-        return new MongoDbChannelMessageStore(mongoDatabaseFactory, "message-store");
+        return new MongoDbChannelMessageStore(mongoDatabaseFactory, "messages");
     }
 
     @Log
