@@ -2,6 +2,7 @@ package es.test.springboot.worker.configuration;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClients;
 import es.test.springboot.worker.ErrorHandler.AddSessionErrorHandler;
 import es.test.springboot.worker.database.entities.Session;
 import es.test.springboot.worker.transformers.ConfirmationMailTransformer;
@@ -87,16 +88,20 @@ public class IntegrationConfig {
 
     /*******mongo************/
 
+    @Value("${spring.data.mongodb.uri}")
+    private String MONGODB_URI;
+
+
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory ()
     {
-//        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/test");
-//        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-//                .applyConnectionString(connectionString)
-//                .build();
+        ConnectionString connectionString = new ConnectionString(MONGODB_URI);
 
-        //return MongoClients.create(mongoClientSettings);
-        return new SimpleMongoClientDatabaseFactory(com.mongodb.client.MongoClients.create(), "test");
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .build();
+
+        return new SimpleMongoClientDatabaseFactory(MongoClients.create(mongoClientSettings), "test");
     }
 
     @Bean
