@@ -15,7 +15,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.DbRefResolver;
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
@@ -117,11 +121,16 @@ public class IntegrationConfig {
     }
 
      */
+
     @Log
     @Bean
-    MongoDbChannelMessageStore mongoDbChannelMessageStore(MongoDatabaseFactory mongoDatabaseFactory)
+    MongoDbChannelMessageStore mongoDbChannelMessageStore(MongoDatabaseFactory mongoDatabaseFactory   )
     {
-        return new MongoDbChannelMessageStore(mongoDatabaseFactory, "messages");
+        MongoMappingContext mappingContext = new MongoMappingContext();
+        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
+        MappingMongoConverter mappingConverter = new MappingMongoConverter(dbRefResolver, mappingContext);
+
+        return new MongoDbChannelMessageStore(mongoDatabaseFactory, mappingConverter,"messages");
     }
 
     @Log
