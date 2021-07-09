@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out ./chart --chart
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: app
+  name: app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      io.kompose.service: app
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out ./chart --chart
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: app
+    spec:
+      containers:
+        - env:
+            - name: DB_PASSWORD
+              value: Welcome
+            - name: DB_URL
+              value: jdbc:postgresql://postgres_docker:5432/conference_app
+            - name: DB_USER
+              value: postgres
+            - name: ELASTICSEARCH
+              value: http://elasticsearch:9200
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: RABBITMQ_PASSWORD
+              value: password
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_QUEUE
+              value: AddSession.Queue
+            - name: RABBITMQ_USER
+              value: user
+          image: cbarrosoc/api:v1
+          name: api
+          ports:
+            - containerPort: 5005
+          resources: {}
+      restartPolicy: Always
+status: {}

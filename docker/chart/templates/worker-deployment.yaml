@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out ./chart --chart
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: worker
+  name: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: worker
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out ./chart --chart
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: worker
+    spec:
+      containers:
+        - env:
+            - name: DB_PASSWORD
+              value: Welcome
+            - name: DB_URL
+              value: jdbc:postgresql://postgres_docker:5432/conference_app
+            - name: DB_USER
+              value: postgres
+            - name: ELASTICSEARCH
+              value: http://elasticsearch:9200
+            - name: EMAIL_HOST
+              value: greenmail
+            - name: EMAIL_PORT
+              value: "3025"
+            - name: EMAIL_USER
+              value: from@test.com
+            - name: INFLUX_DB
+              value: metrics
+            - name: INFLUX_PASSWORD
+              value: welcome
+            - name: INFLUX_URL
+              value: http://influxdb:8086
+            - name: INFLUX_USER
+              value: user
+            - name: MONGO_DATABASE
+              value: eventos
+            - name: MONGO_HOST
+              value: mongo
+            - name: MONGO_URL
+              value: mongodb://mongo/eventos
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: RABBITMQ_PASSWORD
+              value: password
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_QUEUE
+              value: AddSession.Queue
+            - name: RABBITMQ_USER
+              value: user
+          image: cbarrosoc/worker:v1
+          name: worker
+          ports:
+            - containerPort: 5010
+          resources: {}
+      restartPolicy: Always
+status: {}

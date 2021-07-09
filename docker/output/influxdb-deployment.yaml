@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out ./output
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: influxdb
+  name: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: influxdb
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out ./output
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: influxdb
+    spec:
+      containers:
+        - env:
+            - name: INFLUXDB_DB
+              value: metrics
+            - name: INFLUXDB_USER
+              value: usuario
+            - name: INFLUXDB_USER_PASSWORD
+              value: welcome
+          image: influxdb:1.7-alpine
+          name: influxdb
+          ports:
+            - containerPort: 8086
+          resources: {}
+      restartPolicy: Always
+status: {}

@@ -8,7 +8,7 @@ ARG USER_HOME_DIR="/root"
 
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
   && echo "Downlaoding maven" \
-  && curl -fsSL -o /tmp/apache-maven.tar.gz https://apache.brunneis.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz \
+  && curl -fsSL -o /tmp/apache-maven.tar.gz https://ftp.cixug.es/apache/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz \
   \
 #  && echo "Checking download hash" \
 #  && echo "${SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - \

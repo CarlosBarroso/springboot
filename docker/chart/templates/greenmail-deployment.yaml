@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out ./chart --chart
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: greenmail
+  name: greenmail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: greenmail
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out ./chart --chart
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: greenmail
+    spec:
+      containers:
+        - image: greenmail/standalone:1.6.1
+          name: greenmail
+          ports:
+            - containerPort: 3025
+            - containerPort: 3110
+            - containerPort: 3143
+            - containerPort: 3465
+            - containerPort: 3993
+            - containerPort: 3995
+          resources: {}
+      restartPolicy: Always
+status: {}
